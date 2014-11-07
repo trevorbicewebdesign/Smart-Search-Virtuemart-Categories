@@ -21,7 +21,7 @@ require_once JPATH_ADMINISTRATOR . '/components/com_finder/helpers/indexer/adapt
  * @subpackage  Finder.Content
  * @since       2.5
  */
-class plgFinderVmproducts extends FinderIndexerAdapter {
+class plgFinderVmcategories extends FinderIndexerAdapter {
 	/**
 	 * The plugin identifier.
 	 *
@@ -270,8 +270,8 @@ class plgFinderVmproducts extends FinderIndexerAdapter {
 		$item->body = FinderIndexerHelper::prepareContent($item->body, $item->params);
 
 		// Build the necessary route and path information.
-		$item->url 	= "index.php?option=com_virtuemart&view=productdetails&virtuemart_category_id=206&virtuemart_product_id=".$item->id;
-		$item->route 	= "index.php?option=com_virtuemart&view=productdetails&virtuemart_category_id=206&virtuemart_product_id=".$item->id;
+		$item->url 	= "index.php?option=com_virtuemart&Itemid=235&lang=en&limitstart=0&view=category&virtuemart_category_id=".$item->id;
+		$item->route 	= "index.php?option=com_virtuemart&Itemid=235&lang=en&limitstart=0&view=category&virtuemart_category_id=".$item->id;
 		$item->path 	= FinderIndexerHelper::getContentPath($item->route);
 
 		// Get the menu title if it exists.
@@ -284,7 +284,7 @@ class plgFinderVmproducts extends FinderIndexerAdapter {
 		}
 
 		// Add the meta-author.
-		$item->metaauthor = $item->metaauthor->get('author');
+		
 
 		// Add the meta-data processing instructions.
 		$item->addInstruction(FinderIndexer::META_CONTEXT, 'metakey');
@@ -322,10 +322,9 @@ class plgFinderVmproducts extends FinderIndexerAdapter {
 	 *
 	 * @since   2.5
 	 */
-	protected function setup()
-	{
+	protected function setup() {
 		// Load dependent classes.
-		include_once JPATH_SITE . '/components/com_virtuemart/route.php';
+		include_once JPATH_SITE . '/administrator/components/com_virtuemart/router.php';
 
 		return true;
 	}
@@ -344,9 +343,9 @@ class plgFinderVmproducts extends FinderIndexerAdapter {
 		// Check if we can use the supplied SQL query.
 		$sql = $sql instanceof JDatabaseQuery ? $sql : $db->getQuery(true);
 		$sql->select('c.virtuemart_category_id AS id, c.published');
-		$sql->select('c_eng.category_name AS title, c_eng.slug AS alias, c_eng.category_desc AS summary');
+		$sql->select('c_eng.category_name AS title, c_eng.slug AS alias, c_eng.category_description AS summary');
 		// $sql->select('p.created_user_id AS created_by, a.modified_time AS modified, a.modified_user_id AS modified_by');
-		$sql->select('c_eng.metakey, c_eng.metadesc, c.metaauthor, p.metarobot');
+		$sql->select('c_eng.metakey, c_eng.metadesc, c.metaauthor, c.metarobot');
 		$sql->select('c.created_on AS start_date, c.published AS state');
 		// $sql->select('a.access');
 
@@ -364,10 +363,10 @@ class plgFinderVmproducts extends FinderIndexerAdapter {
 	protected function getStateQuery() {
 		$sql = $this->db->getQuery(true);
 		$sql->select($this->db->quoteName('c.virtuemart_category_id AS id'));
-		$sql->join('LEFT', '#__virtuemart_categories_en_gb AS p_eng ON p.virtuemart_product_id = p_eng.virtuemart_product_id');
-		$sql->select($this->db->quoteName('p.published') . ' AS cat_state');
-		$sql->select($this->db->quoteName('a.access') . ' AS cat_access');
-		$sql->from($this->db->quoteName('#__virtuemart_categories') . ' AS p');
+		$sql->join('LEFT', '#__virtuemart_categories_en_gb AS c_eng ON c.virtuemart_product_id = c_eng.virtuemart_product_id');
+		$sql->select($this->db->quoteName('c.published') . ' AS cat_state');
+		//$sql->select($this->db->quoteName('a.access') . ' AS cat_access');
+		$sql->from($this->db->quoteName('#__virtuemart_categories') . ' AS c');
 
 		return $sql;
 	}
