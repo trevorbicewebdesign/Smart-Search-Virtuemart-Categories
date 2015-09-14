@@ -312,7 +312,7 @@ class plgFinderVmcategories extends FinderIndexerAdapter {
 		FinderIndexerHelper::getContentExtras($item);
 
 		// Index the item.
-		FinderIndexer::index($item);
+		$this->indexer->index($item);
 	}
 
 	/**
@@ -323,8 +323,8 @@ class plgFinderVmcategories extends FinderIndexerAdapter {
 	 * @since   2.5
 	 */
 	protected function setup() {
-		// Load dependent classes.
-		include_once JPATH_SITE . '/administrator/components/com_virtuemart/router.php';
+		// Load com_content route helper as it is the fallback for routing in the indexer in this instance.
+		include_once JPATH_SITE . '/components/com_content/helpers/route.php';
 
 		return true;
 	}
@@ -341,7 +341,7 @@ class plgFinderVmcategories extends FinderIndexerAdapter {
 	protected function getListQuery($sql = null) {
 		$db = JFactory::getDbo();
 		// Check if we can use the supplied SQL query.
-		$sql = $sql instanceof JDatabaseQuery ? $sql : $db->getQuery(true);
+		$sql = is_a($sql, 'JDatabaseQuery') ? $sql : $db->getQuery(true);
 		$sql->select('c.virtuemart_category_id AS id, c.published');
 		$sql->select('c_eng.category_name AS title, c_eng.slug AS alias, c_eng.category_description AS summary');
 		// $sql->select('p.created_user_id AS created_by, a.modified_time AS modified, a.modified_user_id AS modified_by');
