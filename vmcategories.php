@@ -303,7 +303,7 @@ class plgFinderVmcategories extends FinderIndexerAdapter {
 		$item->addTaxonomy('Type', 'VM Category');
 
 		// Add the category taxonomy data.
-		$item->addTaxonomy('Category', $item->category, 1, 1);
+		$item->addTaxonomy('VM Category', $item->category, 1, 1);
 
 		// Add the language taxonomy data.
 		$item->addTaxonomy('Language', $item->language);
